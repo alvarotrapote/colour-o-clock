@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html ng-app="clock">
-
 <head>
     <meta charset="utf-8" />
     <title>Colour o'clock</title>
@@ -10,15 +9,12 @@
     <script src="js/vendor/moment.min.js"></script>
     <script src="js/app.js"></script>
 </head>
-
 <body ng-controller="MainCtrl">
     <div class="clock-container" ng-click="clockTime = !clockTime; updateClock()" style="background-color: #{{thecolour}}">
         <div class="clock" style="color: #{{foregroundColor}}">
             <div class="date">{{thedate}}</div>
             <div class="time">{{theclock}}</div>
-            <!-- <div class="colour">#{{thecolour}}</div> -->
         </div>
     </div>
 </body>
-
 </html>
