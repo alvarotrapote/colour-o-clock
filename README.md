@@ -1,10 +1,8 @@
 ## Colour o'clock
 
-Clock and colour palette together. As time goes, all the colours are visited, some will be bright, some won't.
+Clock and colour palette together. As time goes, all the colours are visited, some will be bright, some won't... as the real life ;)
 
-## Motivation
-
-Just experiment with colours, and start to contribute in Github. 
+<a href="https://github.com/alvarotrapote/colour-o-clock">VIEW DEMO</a>
 
 ## License
 
