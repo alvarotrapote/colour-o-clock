@@ -2,7 +2,7 @@
 
 Clock and colour palette together. As time goes, all the colours are visited, some will be bright, some won't... as the real life ;)
 
-<a href="https://github.com/alvarotrapote/colour-o-clock">VIEW DEMO</a>
+<a href="https://alvarotrapote.github.io/colour-o-clock" target="_blank">VIEW DEMO</a>
 
 ## License
 
