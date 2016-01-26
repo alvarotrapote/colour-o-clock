@@ -29,10 +29,10 @@ app.controller('MainCtrl', function($scope, $timeout, dateFilter) {
         var now = moment();
         var numberOfColours = 256 * 256 * 256;
         // Difference btw now and the start of the year, in milliseconds. Then, map the number of colours with the number of seconds in a year.
-        if (secondsInYear > numberOfColours) {
-            $scope.thecolour = Math.floor(now.diff(startOfYear, 'seconds') - numberOfColours).toString(16);
+        if (now.diff(startOfYear, 'seconds') < numberOfColours) {
+            $scope.thecolour = Math.floor(now.diff(startOfYear, 'seconds')).toString(16);            
         } else {
-            $scope.thecolour = Math.floor(now.diff(startOfYear, 'seconds')).toString(16);
+            $scope.thecolour = Math.floor(now.diff(startOfYear, 'seconds') - numberOfColours).toString(16);
         }
         $scope.foregroundColor = $scope.idealTextColor($scope.thecolour);
     };
