@@ -14,11 +14,10 @@
 </head>
 
 <body ng-controller="MainCtrl">
-    <div class="clock-container" ng-click="clockTime = !clockTime; updateClock()" style="background-color: #{{thecolour}}">
-        <div class="clock" style="color: {{foregroundColor}}">
+    <div class="clock-container" ng-click="changeView()" ng-style="{'background-color': thecolour}">
+        <div class="clock" ng-style="{'color': foregroundColor}">
             <div class="date">{{thedate}}</div>
             <div class="time">{{theclock}}</div>
-            <!-- <div class="colour">#{{thecolour}}</div> -->
         </div>
     </div>
 </body>

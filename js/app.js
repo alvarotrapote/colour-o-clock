@@ -1,53 +1,52 @@
 var app = angular.module('clock', []);
 
+"use strict";
+
 app.controller('MainCtrl', function($scope, $timeout, dateFilter) {
+    
     $scope.clockTime = true;
 
-    $scope.updateTime = function() {        
-        console.log('updateTime');  
-        $timeout(function(){
-            $scope.updateClock();
-            $scope.updateTime();
+    function updateTime() {
+        $timeout(function() {
+            updateClock();
+            updateTime();
         }, 1000);
-    };
-
-    $scope.updateClock = function() {
-        $scope.thetime = (dateFilter(new Date(), 'HH:mm:ss'));
-        $scope.thedate = (dateFilter(new Date(), 'fullDate'));
-        if ($scope.clockTime)
-            $scope.theclock = $scope.thetime;
-        else
-            $scope.theclock = "#" + $scope.thecolour;
-        var dt = new Date();        
-        $scope.newColour();
     }
 
-    $scope.newColour = function() {
-        var startOfYear = moment().startOf('year');
-        var endOfYear = moment().endOf('year');
-        var secondsInYear = endOfYear.diff(startOfYear, 'seconds');
-        var now = moment();
-        var numberOfColours = 256 * 256 * 256;
-        // Difference btw now and the start of the year, in milliseconds. Then, map the number of colours with the number of seconds in a year.
-        if (now.diff(startOfYear, 'seconds') < numberOfColours) {
-            $scope.thecolour = Math.floor(now.diff(startOfYear, 'seconds')).toString(16);            
-        } else {
-            $scope.thecolour = Math.floor(now.diff(startOfYear, 'seconds') - numberOfColours).toString(16);
-        }
-        $scope.foregroundColor = $scope.getTextColor($scope.thecolour);
-    };
+    function updateClock() {
+        var time = moment().format('HH:mm:ss');
+        $scope.thedate = moment().format('dddd, DD MMMM YYYY');
+        $scope.thecolour = "#" + getColour(time);
+        $scope.foregroundColor = getTextColor($scope.thecolour);
 
-    $scope.getTextColor = function(bgColor) {
+        if ($scope.clockTime) {
+            $scope.theclock = time;
+        } else {
+            $scope.theclock = $scope.thecolour;
+        }
+    }
+
+    function getColour(time) {
+        var now = moment(time, 'HH:mm:ss');
+        var startOfYear = moment().startOf('year');
+        var numberOfColours = 16777216; // 256 * 256 * 256
+
+        // Difference btw now and the start of the year, in milliseconds. Then, it maps the number of colours with the number of seconds in a year.
+        if (now.diff(startOfYear, 'seconds') < numberOfColours) {
+            return ('000000' + Math.floor(now.diff(startOfYear, 'seconds')).toString(16).toUpperCase()).slice(-6);
+        } else {
+            return ('000000' + Math.floor(now.diff(startOfYear, 'seconds') - numberOfColours).toString(16).toUpperCase()).slice(-6);
+        }
+    }
+
+    function getTextColor(bgColor) {
         var nThreshold = 105;
-        var components = $scope.getRGBComponents(bgColor);
-        // debugger
+        var components = getRGBComponents(bgColor);
         var bgDelta = (components.R * 0.299) + (components.G * 0.587) + (components.B * 0.114);
-        // debugger
-        console.log((255 - bgDelta) < nThreshold)
         return ((255 - bgDelta) < nThreshold) ? "#000000" : "#ffffff";
     }
 
-    $scope.getRGBComponents = function(color) {
+    function getRGBComponents(color) {
         var r = color.substring(0, 2);
         var g = color.substring(2, 4);
         var b = color.substring(4, 6);
@@ -58,5 +57,11 @@ app.controller('MainCtrl', function($scope, $timeout, dateFilter) {
         };
     }
 
-    $scope.updateTime();
+    $scope.changeView = function() {
+        $scope.clockTime = !$scope.clockTime;
+        updateClock();
+    }
+
+    updateTime();
+
 });
