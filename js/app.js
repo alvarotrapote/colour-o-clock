@@ -37,10 +37,30 @@ function getRGBComponents(color) {
     };
 }
 
+function getPreferredLocale() {
+    if (Array.isArray(navigator.languages) && navigator.languages.length > 0) {
+        return navigator.languages[0];
+    }
+
+    return navigator.language || 'en-US';
+}
+
+function formatDateForLocale(date) {
+    const locale = getPreferredLocale();
+    const formatter = new Intl.DateTimeFormat(locale, {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    });
+
+    return formatter.format(date);
+}
+
 function calculateClockState(showTime) {
     const now = moment();
     const time = now.format('HH:mm:ss');
-    const date = now.format('dddd, DD MMMM YYYY');
+    const date = formatDateForLocale(now.toDate());
     const colour = "#" + getColour(time);
     const foreground = getTextColor(colour);
 
