@@ -47,9 +47,18 @@ app.controller('MainCtrl', function($scope, $timeout, dateFilter) {
     }
 
     function getRGBComponents(color) {
-        var r = color.substring(0, 2);
-        var g = color.substring(2, 4);
-        var b = color.substring(4, 6);
+        var normalizedColor = color.charAt(0) === '#' ? color.substring(1) : color;
+        if (normalizedColor.length !== 6) {
+            return {
+                R: 0,
+                G: 0,
+                B: 0
+            };
+        }
+
+        var r = normalizedColor.substring(0, 2);
+        var g = normalizedColor.substring(2, 4);
+        var b = normalizedColor.substring(4, 6);
         return {
             R: parseInt(r, 16),
             G: parseInt(g, 16),
@@ -60,8 +69,9 @@ app.controller('MainCtrl', function($scope, $timeout, dateFilter) {
     $scope.changeView = function() {
         $scope.clockTime = !$scope.clockTime;
         updateClock();
-    }
+    };
 
+    updateClock();
     updateTime();
 
 });
