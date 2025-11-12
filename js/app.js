@@ -57,7 +57,15 @@ function formatDateForLocale(date) {
     return formatter.format(date);
 }
 
-function calculateClockState(showTime) {
+function getIsMobileViewport() {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+        return false;
+    }
+
+    return window.matchMedia('(max-width: 800px)').matches;
+}
+
+function calculateClockState() {
     const now = moment();
     const time = now.format('HH:mm:ss');
     const date = formatDateForLocale(now.toDate());
@@ -66,31 +74,57 @@ function calculateClockState(showTime) {
 
     return {
         date,
-        displayValue: showTime ? time : colour,
+        timeValue: time,
+        hexValue: colour,
         background: colour,
-        foreground,
-        rawTime: time
+        foreground
     };
 }
 
 function ClockApp() {
     const [showTime, setShowTime] = useState(true);
-    const [clockState, setClockState] = useState(() => calculateClockState(true));
+    const [clockState, setClockState] = useState(() => calculateClockState());
     const touchStartXRef = useRef(null);
+    const [isMobileViewport, setIsMobileViewport] = useState(() => getIsMobileViewport());
 
     useEffect(() => {
         function tick() {
-            setClockState(calculateClockState(showTime));
+            setClockState(calculateClockState());
         }
 
         tick();
         const intervalId = setInterval(tick, 1000);
         return () => clearInterval(intervalId);
-    }, [showTime]);
+    }, []);
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+            return;
+        }
+
+        const mediaQuery = window.matchMedia('(max-width: 800px)');
+        function handleViewportChange(event) {
+            setIsMobileViewport(event.matches);
+        }
+
+        handleViewportChange(mediaQuery);
+
+        if (typeof mediaQuery.addEventListener === 'function') {
+            mediaQuery.addEventListener('change', handleViewportChange);
+            return () => mediaQuery.removeEventListener('change', handleViewportChange);
+        }
+
+        if (typeof mediaQuery.addListener === 'function') {
+            mediaQuery.addListener(handleViewportChange);
+            return () => mediaQuery.removeListener(handleViewportChange);
+        }
+
+        return undefined;
+    }, []);
 
     function updateView(nextShowTime) {
         setShowTime(nextShowTime);
-        setClockState(calculateClockState(nextShowTime));
+        setClockState(calculateClockState());
     }
 
     function handleContainerTap() {
@@ -172,7 +206,33 @@ function ClockApp() {
             React.createElement(
                 'div',
                 { className: 'clock', style: { color: clockState.foreground } },
-                React.createElement('div', { className: 'time' }, clockState.displayValue),
+                React.createElement(
+                    'div',
+                    { className: 'time' },
+                    React.createElement(
+                        'div',
+                        {
+                            className: 'value-panels',
+                            'data-orientation': isMobileViewport ? 'horizontal' : 'vertical'
+                        },
+                        React.createElement(
+                            'span',
+                            {
+                                className: 'value-panel time-panel' + (showTime ? ' is-visible' : ''),
+                                'aria-hidden': !showTime
+                            },
+                            clockState.timeValue
+                        ),
+                        React.createElement(
+                            'span',
+                            {
+                                className: 'value-panel hex-panel' + (!showTime ? ' is-visible' : ''),
+                                'aria-hidden': showTime
+                            },
+                            clockState.hexValue
+                        )
+                    )
+                ),
                 React.createElement('div', { className: 'date' }, clockState.date)
             )
         )

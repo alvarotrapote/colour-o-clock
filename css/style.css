@@ -241,6 +241,54 @@ textarea {
     line-height: 1em;
 }
 
+.value-panels {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    min-height: 1em;
+}
+
+.value-panel {
+    position: absolute;
+    left: 50%;
+    opacity: 0;
+    transform: translate(-50%, 0);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    white-space: nowrap;
+}
+
+.value-panels[data-orientation="vertical"] .value-panel {
+    transform: translate(-50%, 0.6em);
+}
+
+.value-panels[data-orientation="vertical"] .value-panel.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.value-panels[data-orientation="horizontal"] .value-panel {
+    transform: translate(-50%, 0);
+}
+
+.value-panels[data-orientation="horizontal"] .time-panel:not(.is-visible) {
+    transform: translate(calc(-50% - 3rem), 0);
+}
+
+.value-panels[data-orientation="horizontal"] .hex-panel:not(.is-visible) {
+    transform: translate(calc(-50% + 3rem), 0);
+}
+
+.value-panels[data-orientation="horizontal"] .value-panel.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .value-panel {
+        transition: none;
+    }
+}
+
 .date {
     text-align: center;
     font-size: 3vw;
