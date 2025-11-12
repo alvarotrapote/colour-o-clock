@@ -76,7 +76,7 @@ function calculateClockState(showTime) {
 function ClockApp() {
     const [showTime, setShowTime] = useState(true);
     const [clockState, setClockState] = useState(() => calculateClockState(true));
-    const touchStartYRef = useRef(null);
+    const touchStartXRef = useRef(null);
 
     useEffect(() => {
         function tick() {
@@ -109,29 +109,29 @@ function ClockApp() {
 
     function handleTouchStart(event) {
         if (event.touches && event.touches.length === 1) {
-            touchStartYRef.current = event.touches[0].clientY;
+            touchStartXRef.current = event.touches[0].clientX;
         }
     }
 
     function handleTouchEnd(event) {
-        if (touchStartYRef.current === null || !event.changedTouches || event.changedTouches.length === 0) {
-            touchStartYRef.current = null;
+        if (touchStartXRef.current === null || !event.changedTouches || event.changedTouches.length === 0) {
+            touchStartXRef.current = null;
             return;
         }
 
-        const touchEndY = event.changedTouches[0].clientY;
-        const deltaY = touchEndY - touchStartYRef.current;
+        const touchEndX = event.changedTouches[0].clientX;
+        const deltaX = touchEndX - touchStartXRef.current;
         const swipeThreshold = 40;
 
-        if (Math.abs(deltaY) >= swipeThreshold) {
-            if (deltaY < 0 && showTime) {
+        if (Math.abs(deltaX) >= swipeThreshold) {
+            if (deltaX < 0 && showTime) {
                 updateView(false);
-            } else if (deltaY > 0 && !showTime) {
+            } else if (deltaX > 0 && !showTime) {
                 updateView(true);
             }
         }
 
-        touchStartYRef.current = null;
+        touchStartXRef.current = null;
     }
 
     function renderToggleButton(label, shortLabel, isActive, onClick) {

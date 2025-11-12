@@ -168,12 +168,31 @@ textarea {
 }
 
 @media (max-width: 800px) {
-    .view-toggle {
-        top: 1rem;
-        left: 1rem;
+    .clock-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .clock {
+        position: static;
         transform: none;
-        gap: 0.5rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .view-toggle {
+        position: static;
+        top: auto;
+        left: auto;
+        transform: none;
+        flex-direction: row;
+        gap: 0.85rem;
         padding: 0;
+        align-items: center;
+        justify-content: center;
+        order: 3;
     }
 
     .toggle-button {
@@ -183,16 +202,16 @@ textarea {
         border-radius: 999px;
         display: inline-flex;
         font-size: 0;
-        height: 36px;
+        height: 34px;
         justify-content: center;
         min-width: 0;
         padding: 0;
-        width: 36px;
-        opacity: 0.7;
+        width: 34px;
+        opacity: 0.75;
     }
 
     .toggle-button.active {
-        background: color-mix(in srgb, var(--toggle-color, currentColor) 25%, transparent);
+        background: color-mix(in srgb, var(--toggle-color, currentColor) 30%, transparent);
         border-color: color-mix(in srgb, var(--toggle-color, currentColor) 80%, transparent);
         opacity: 1;
     }
@@ -203,9 +222,9 @@ textarea {
 
     .toggle-button::after {
         content: attr(data-short-label);
-        font-size: 0.65rem;
+        font-size: 0.6rem;
         font-weight: 600;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.08em;
         line-height: 1;
     }
 
