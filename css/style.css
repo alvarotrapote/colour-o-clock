@@ -117,6 +117,7 @@ textarea {
     width: 100%;
     font-family: 'Roboto Mono', Monospace;
     cursor: pointer;
+    position: relative;
 }
 
 .clock {
@@ -124,6 +125,96 @@ textarea {
     left: 50%;
     position: absolute;
     transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.view-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    padding: 0.5rem;
+    color: var(--toggle-color, currentColor);
+}
+
+.toggle-button {
+    background: color-mix(in srgb, var(--toggle-color, currentColor) 15%, transparent);
+    border: none;
+    border-left: 3px solid transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: min(5vw, 18px);
+    letter-spacing: 0.1em;
+    padding: 0.35rem 1.25rem 0.35rem 0.75rem;
+    text-transform: uppercase;
+    opacity: 0.6;
+    text-align: left;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.toggle-button-label {
+    display: inline-block;
+    font-size: 0.85rem;
+}
+
+.toggle-button.active {
+    background: color-mix(in srgb, var(--toggle-color, currentColor) 30%, transparent);
+    opacity: 1;
+    border-left-color: currentColor;
+}
+
+@media (max-width: 800px) {
+    .view-toggle {
+        top: 1rem;
+        left: 1rem;
+        transform: none;
+        gap: 0.5rem;
+        padding: 0;
+    }
+
+    .toggle-button {
+        align-items: center;
+        background: transparent;
+        border: 1px solid color-mix(in srgb, var(--toggle-color, currentColor) 60%, transparent);
+        border-radius: 999px;
+        display: inline-flex;
+        font-size: 0;
+        height: 36px;
+        justify-content: center;
+        min-width: 0;
+        padding: 0;
+        width: 36px;
+        opacity: 0.7;
+    }
+
+    .toggle-button.active {
+        background: color-mix(in srgb, var(--toggle-color, currentColor) 25%, transparent);
+        border-color: color-mix(in srgb, var(--toggle-color, currentColor) 80%, transparent);
+        opacity: 1;
+    }
+
+    .toggle-button-label {
+        display: none;
+    }
+
+    .toggle-button::after {
+        content: attr(data-short-label);
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        line-height: 1;
+    }
+
+}
+
+.toggle-button:focus-visible {
+    outline: 2px dashed currentColor;
+    outline-offset: 4px;
+    opacity: 1;
 }
 
 .time {
@@ -132,7 +223,7 @@ textarea {
 }
 
 .date {
-    text-align: right;
+    text-align: center;
     font-size: 3vw;
 }
 

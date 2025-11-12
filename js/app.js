@@ -1,6 +1,6 @@
 "use strict";
 
-const { useEffect, useState } = React;
+const { useEffect, useRef, useState } = React;
 
 function getColour(time) {
     const now = moment(time, 'HH:mm:ss');
@@ -76,6 +76,7 @@ function calculateClockState(showTime) {
 function ClockApp() {
     const [showTime, setShowTime] = useState(true);
     const [clockState, setClockState] = useState(() => calculateClockState(true));
+    const touchStartYRef = useRef(null);
 
     useEffect(() => {
         function tick() {
@@ -87,10 +88,66 @@ function ClockApp() {
         return () => clearInterval(intervalId);
     }, [showTime]);
 
-    function handleChangeView() {
-        const nextShowTime = !showTime;
+    function updateView(nextShowTime) {
         setShowTime(nextShowTime);
         setClockState(calculateClockState(nextShowTime));
+    }
+
+    function handleContainerTap() {
+        updateView(!showTime);
+    }
+
+    function handleSelectView(nextShowTime, event) {
+        if (event) {
+            event.stopPropagation();
+        }
+
+        if (nextShowTime !== showTime) {
+            updateView(nextShowTime);
+        }
+    }
+
+    function handleTouchStart(event) {
+        if (event.touches && event.touches.length === 1) {
+            touchStartYRef.current = event.touches[0].clientY;
+        }
+    }
+
+    function handleTouchEnd(event) {
+        if (touchStartYRef.current === null || !event.changedTouches || event.changedTouches.length === 0) {
+            touchStartYRef.current = null;
+            return;
+        }
+
+        const touchEndY = event.changedTouches[0].clientY;
+        const deltaY = touchEndY - touchStartYRef.current;
+        const swipeThreshold = 40;
+
+        if (Math.abs(deltaY) >= swipeThreshold) {
+            if (deltaY < 0 && showTime) {
+                updateView(false);
+            } else if (deltaY > 0 && !showTime) {
+                updateView(true);
+            }
+        }
+
+        touchStartYRef.current = null;
+    }
+
+    function renderToggleButton(label, shortLabel, isActive, onClick) {
+        const className = 'toggle-button' + (isActive ? ' active' : '');
+        return React.createElement(
+            'button',
+            {
+                type: 'button',
+                className,
+                onClick,
+                'aria-pressed': isActive,
+                'aria-label': label,
+                'data-short-label': shortLabel
+            },
+            React.createElement('span', { className: 'toggle-button-label' }, label)
+        );
     }
 
     return (
@@ -98,14 +155,25 @@ function ClockApp() {
             'div',
             {
                 className: 'clock-container',
-                onClick: handleChangeView,
-                style: { backgroundColor: clockState.background }
+                onClick: handleContainerTap,
+                onTouchStart: handleTouchStart,
+                onTouchEnd: handleTouchEnd,
+                style: {
+                    backgroundColor: clockState.background,
+                    '--toggle-color': clockState.foreground
+                }
             },
             React.createElement(
                 'div',
+                { className: 'view-toggle', role: 'group', 'aria-label': 'Display mode' },
+                renderToggleButton('Time', 'T', showTime, (event) => handleSelectView(true, event)),
+                renderToggleButton('Hex', '#', !showTime, (event) => handleSelectView(false, event))
+            ),
+            React.createElement(
+                'div',
                 { className: 'clock', style: { color: clockState.foreground } },
-                React.createElement('div', { className: 'date' }, clockState.date),
-                React.createElement('div', { className: 'time' }, clockState.displayValue)
+                React.createElement('div', { className: 'time' }, clockState.displayValue),
+                React.createElement('div', { className: 'date' }, clockState.date)
             )
         )
     );
