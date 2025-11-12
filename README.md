@@ -1,8 +1,24 @@
 ## Colour o'clock
 
-Clock and colour palette together. As time goes, all the colours are visited, some will be bright, some won't... as the real life ;)
+Colour o'clock is a lightweight single-page clock that keeps time while cycling through the full RGB spectrum. As the seconds tick by the background colour shifts, so every moment of the day has its own hue.
 
-<a href="https://alvarotrapote.github.io/colour-o-clock" target="_blank">VIEW DEMO</a>
+<a href="https://alvarotrapote.github.io/colour-o-clock" target="_blank">View the live demo</a>
+
+## Getting started
+
+This project is a static site—no build step required. Clone the repository and open `index.html` in your browser:
+
+```bash
+git clone https://github.com/alvarotrapote/colour-o-clock.git
+cd colour-o-clock
+open index.html # or `xdg-open index.html` on Linux, `start index.html` on Windows
+```
+
+If you are running a local web server (for example `npx serve`), host the project root and visit it in your browser.
+
+## Background colour behaviour
+
+The app stretches the root element to fill the full viewport height so that the dynamic background colour is visible across the entire page. If you embed Colour o'clock inside another layout, ensure the container element also spans the full height to preserve the colour transitions.
 
 ## License
 
